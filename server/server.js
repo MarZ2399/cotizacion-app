@@ -8,7 +8,7 @@ const cotizacionRoutes = require('./routes/cotizacionRoutes.js');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middlewares
+// ✅ CORS MEJORADO - Agrega métodos y headers explícitos
 const corsOptions = {
   origin: [
     'http://localhost:5173',
@@ -17,7 +17,9 @@ const corsOptions = {
     /\.vercel\.app$/
   ],
   credentials: true,
-  optionsSuccessStatus: 200
+  optionsSuccessStatus: 200,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // ← AGREGAR
+  allowedHeaders: ['Content-Type', 'Authorization']      // ← AGREGAR
 };
 
 app.use(cors(corsOptions));
@@ -25,7 +27,7 @@ app.use(express.json());
 
 // Log de todas las peticiones
 app.use((req, res, next) => {
-  console.log(`${req.method} ${req.path}`);
+  console.log(`${req.method} ${req.path} - Origin: ${req.get('origin')}`); // ← MEJORAR LOG
   next();
 });
 
