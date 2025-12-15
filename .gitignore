@@ -1,0 +1,34 @@
+# Node modules
+node_modules/
+*/node_modules/
+
+# Variables de entorno
+.env
+.env.local
+.env.production
+server/.env
+
+# Build
+dist/
+build/
+client/dist/
+client/build/
+
+# Logs
+*.log
+npm-debug.log*
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporal
+.cache/
+*.tmp
