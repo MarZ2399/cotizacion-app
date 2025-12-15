@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
+import { API_URL } from '../../config/api'; // ← AGREGAR ESTA LÍNEA
 
 const ResumenPedido = ({ datosEmpresa, productos, onBack, onEdit }) => {
   const [enviando, setEnviando] = useState(false);
@@ -11,7 +12,7 @@ const ResumenPedido = ({ datosEmpresa, productos, onBack, onEdit }) => {
     try {
       const pedido = {
         empresa: {
-          nombre: datosEmpresa.nombreEmpresa,  // ← Cambio aquí
+          nombre: datosEmpresa.nombreEmpresa,
           ruc: '',
           ciudad: '',
           tipo: ''
@@ -23,11 +24,12 @@ const ResumenPedido = ({ datosEmpresa, productos, onBack, onEdit }) => {
         tipo: 'pedido'
       };
 
-      const response = await axios.post('http://localhost:5000/api/pedido', pedido);
+      // ✅ CAMBIAR ESTA LÍNEA
+      const response = await axios.post(`${API_URL}/api/pedido`, pedido);
       
-      // Enviar a WhatsApp
+      // ✅ CAMBIAR ESTA LÍNEA TAMBIÉN
       const whatsappResponse = await axios.post(
-        `http://localhost:5000/api/pedido/${response.data._id}/whatsapp`
+        `${API_URL}/api/pedido/${response.data._id}/whatsapp`
       );
 
       toast.success('Pedido enviado exitosamente');

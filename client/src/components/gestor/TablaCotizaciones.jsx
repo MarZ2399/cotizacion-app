@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { API_URL } from '../../config/api'; // ← AGREGAR ESTA LÍNEA
 import toast from 'react-hot-toast';
 import { generarPDFCotizacion } from '../../utils/pdfGenerator';
 
@@ -14,7 +15,8 @@ const TablaCotizaciones = () => {
   const cargarCotizaciones = async () => {
     try {
       setCargando(true);
-      const response = await axios.get('http://localhost:5000/api/cotizaciones');
+      // ✅ CAMBIO 1: Línea 18
+      const response = await axios.get(`${API_URL}/api/cotizaciones`);
       setCotizaciones(response.data);
     } catch (error) {
       console.error('Error al cargar cotizaciones:', error);
@@ -30,8 +32,9 @@ const TablaCotizaciones = () => {
 
   const enviarWhatsApp = async (cotizacionId) => {
     try {
+      // ✅ CAMBIO 2: Línea 37
       const response = await axios.post(
-        `http://localhost:5000/api/cotizacion/${cotizacionId}/whatsapp`
+        `${API_URL}/api/cotizacion/${cotizacionId}/whatsapp`
       );
       window.open(response.data.url, '_blank');
       toast.success('WhatsApp abierto');

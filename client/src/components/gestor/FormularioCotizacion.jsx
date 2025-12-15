@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { API_URL } from '../../config/api'; // ✅ YA LO TIENES
 import toast from 'react-hot-toast';
 import { generarPDFCotizacion } from '../../utils/pdfGenerator';
 
@@ -53,16 +54,17 @@ const FormularioCotizacion = ({ pedido, onCancelar, onGuardar }) => {
         pedidoOriginalId: pedido._id
       };
 
-      const response = await axios.post('http://localhost:5000/api/cotizacion', cotizacion);
+      // ✅ CAMBIO 1: Línea 51
+      const response = await axios.post(`${API_URL}/api/cotizacion`, cotizacion);
       
       toast.success('Cotización creada exitosamente');
       
       // Generar PDF
       generarPDFCotizacion(response.data);
       
-      // Enviar por WhatsApp
+      // ✅ CAMBIO 2: Línea 59
       const whatsappResponse = await axios.post(
-        `http://localhost:5000/api/cotizacion/${response.data._id}/whatsapp`
+        `${API_URL}/api/cotizacion/${response.data._id}/whatsapp`
       );
       window.open(whatsappResponse.data.url, '_blank');
       

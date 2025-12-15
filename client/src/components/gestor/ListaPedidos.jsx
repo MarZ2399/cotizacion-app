@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { API_URL } from '../../config/api'; // ← AGREGAR ESTA LÍNEA
 import toast from 'react-hot-toast';
 
 const ListaPedidos = ({ onCrearCotizacion }) => {
@@ -14,7 +15,8 @@ const ListaPedidos = ({ onCrearCotizacion }) => {
   const cargarPedidos = async () => {
     try {
       setCargando(true);
-      const response = await axios.get('http://localhost:5000/api/pedidos');
+      // ✅ CAMBIAR ESTA LÍNEA (Línea 18)
+      const response = await axios.get(`${API_URL}/api/pedidos`);
       setPedidos(response.data);
     } catch (error) {
       console.error('Error al cargar pedidos:', error);
