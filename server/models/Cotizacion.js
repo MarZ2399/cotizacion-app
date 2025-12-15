@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
 const cotizacionSchema = new mongoose.Schema({
   numeroDocumento: {
@@ -72,4 +72,4 @@ cotizacionSchema.pre('validate', async function(next) {
   next();
 });
 
-export default mongoose.model('Cotizacion', cotizacionSchema);
+module.exports = mongoose.model('Cotizacion', cotizacionSchema);

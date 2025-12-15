@@ -1,6 +1,6 @@
-import express from 'express';
-import Cotizacion from '../models/Cotizacion.js';
-import Pedido from '../models/Pedido.js';
+const express = require('express');
+const Cotizacion = require('../models/Cotizacion.js');
+const Pedido = require('../models/Pedido.js');
 
 const router = express.Router();
 const WHATSAPP_GESTOR = process.env.WHATSAPP_NUMBER || '+51941030413'; // Tu número
@@ -124,4 +124,4 @@ router.post('/:id/whatsapp', async (req, res) => {
   }
 });
 
-export default router;
+module.exports = router;

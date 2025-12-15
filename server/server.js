@@ -1,43 +1,26 @@
-// import express from 'express';
-// import mongoose from 'mongoose';
-// import cors from 'cors';
-// import dotenv from 'dotenv';
-// import cotizacionesRouter from './routes/cotizaciones.js';
-
-// dotenv.config();
-
-// const app = express();
-
-// // Middlewares
-// app.use(cors());
-// app.use(express.json());
-
-// // MongoDB Connection
-// mongoose.connect(process.env.MONGODB_URI)
-//   .then(() => console.log('✅ MongoDB conectado'))
-//   .catch(err => console.error('❌ Error MongoDB:', err));
-
-// // Routes
-// app.use('/api/cotizaciones', cotizacionesRouter);
-
-// const PORT = process.env.PORT || 5000;
-// app.listen(PORT, () => {
-//   console.log(`🚀 Servidor corriendo en puerto ${PORT}`);
-// });
-import express from 'express';
-import mongoose from 'mongoose';
-import cors from 'cors';
-import dotenv from 'dotenv';
-import pedidoRoutes from './routes/pedidoRoutes.js';
-import cotizacionRoutes from './routes/cotizacionRoutes.js';
-
-dotenv.config();
+require('dotenv').config();
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+const pedidoRoutes = require('./routes/pedidoRoutes.js');
+const cotizacionRoutes = require('./routes/cotizacionRoutes.js');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middlewares
-app.use(cors());
+const corsOptions = {
+  origin: [
+    'http://localhost:5173',
+    'http://localhost:5174',
+    process.env.FRONTEND_URL,
+    /\.vercel\.app$/
+  ],
+  credentials: true,
+  optionsSuccessStatus: 200
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Log de todas las peticiones
@@ -59,8 +42,8 @@ mongoose.connect(process.env.MONGODB_URI)
 // Rutas
 app.use('/api/pedido', pedidoRoutes);
 app.use('/api/pedidos', pedidoRoutes);
-app.use('/api/cotizacion', cotizacionRoutes);  // ← AGREGAR ESTA LÍNEA
-app.use('/api/cotizaciones', cotizacionRoutes); // ← AGREGAR ESTA LÍNEA
+app.use('/api/cotizacion', cotizacionRoutes);
+app.use('/api/cotizaciones', cotizacionRoutes);
 
 // Ruta de prueba
 app.get('/', (req, res) => {
@@ -84,8 +67,13 @@ app.use((req, res) => {
   });
 });
 
-// Iniciar servidor
-app.listen(PORT, () => {
-  console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
-  console.log(`📱 WhatsApp: ${process.env.WHATSAPP_NUMBER}`);
-});
+// Solo para desarrollo local
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
+    console.log(`📱 WhatsApp: ${process.env.WHATSAPP_NUMBER}`);
+  });
+}
+
+// Exportar para Vercel
+module.exports = app;

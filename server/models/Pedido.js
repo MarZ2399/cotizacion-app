@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
 const pedidoSchema = new mongoose.Schema({
   numeroDocumento: {
@@ -64,4 +64,4 @@ pedidoSchema.pre('validate', async function(next) {
   next();
 });
 
-export default mongoose.model('Pedido', pedidoSchema);
+module.exports = mongoose.model('Pedido', pedidoSchema);

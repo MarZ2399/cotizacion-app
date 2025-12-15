@@ -1,5 +1,5 @@
-import express from 'express';
-import Pedido from '../models/Pedido.js';
+const express = require('express');
+const Pedido = require('../models/Pedido.js');
 
 const router = express.Router();
 const WHATSAPP_GESTOR = process.env.WHATSAPP_NUMBER || '+51941030413';
@@ -117,4 +117,5 @@ router.post('/:id/whatsapp', async (req, res) => {
   }
 });
 
-export default router;
+// ⬇️ CAMBIAR export default POR module.exports
+module.exports = router;
