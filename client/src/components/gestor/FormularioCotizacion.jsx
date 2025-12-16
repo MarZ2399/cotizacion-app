@@ -48,6 +48,7 @@ const FormularioCotizacion = ({ pedido, onCancelar, onGuardar }) => {
         nombreContacto: pedido.nombreContacto,
         numeroContacto: pedido.numeroContacto,
         pais: pedido.pais,
+        zona: pedido.zona,
         productos: productos,
         totalGeneral: calcularTotal(),
         tipo: 'cotizacion',

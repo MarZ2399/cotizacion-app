@@ -3,6 +3,7 @@ import { Toaster } from 'react-hot-toast';
 import FormularioEmpresa from '../components/cliente/FormularioEmpresa';
 import SeleccionProductos from '../components/cliente/SeleccionProductos';
 import ResumenPedido from '../components/cliente/ResumenPedido';
+import logo from '../assets/logo.png';
 
 const ClientePedido = () => {
   const [paso, setPaso] = useState(1);
@@ -32,22 +33,33 @@ const ClientePedido = () => {
       <Toaster position="top-right" />
       
       {/* Header */}
-      <header className="bg-white shadow-md">
-        <div className="max-w-7xl mx-auto px-4 py-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-800">Twyford Glass</h1>
-              <p className="text-gray-600 mt-1">Realizar Pedido</p>
-            </div>
-            <a
-              href="/login"
-              className="text-blue-600 hover:text-blue-800 font-medium text-sm"
-            >
-              Acceso Gestor →
-            </a>
-          </div>
+<header className="bg-white shadow-md">
+  <div className="max-w-7xl mx-auto px-4 py-6">
+    <div className="flex items-center justify-between">
+      {/* Logo + Título */}
+      <div className="flex items-center gap-4">
+        <img 
+          src={logo} 
+          alt="Twyford Glass Logo" 
+          className="h-20 w-auto object-contain"
+        />
+        {/* ← Texto oculto en móvil, visible desde tablet (md) */}
+        <div className="hidden md:block">
+          <h1 className="text-3xl font-bold text-gray-800">Twyford Glass</h1>
+          <p className="text-gray-600 mt-1">Realizar Pedido</p>
         </div>
-      </header>
+      </div>
+      
+      {/* Botón amarillo */}
+      <a
+        href="/login"
+        className="bg-yellow-400 hover:bg-yellow-500 text-black font-semibold px-6 py-2.5 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg"
+      >
+        Acceso Gestor →
+      </a>
+    </div>
+  </div>
+</header>
 
       {/* Indicador de pasos */}
       <div className="max-w-4xl mx-auto px-4 py-8">

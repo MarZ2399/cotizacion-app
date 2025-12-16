@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
-import { API_URL } from '../../config/api'; // ← AGREGAR ESTA LÍNEA
+import { API_URL } from '../../config/api';
+import ZONAS_WHATSAPP from '../../config/zonas'; // ← IMPORTAR CONFIGURACIÓN DE ZONAS
 
 const ResumenPedido = ({ datosEmpresa, productos, onBack, onEdit }) => {
   const [enviando, setEnviando] = useState(false);
@@ -20,22 +21,27 @@ const ResumenPedido = ({ datosEmpresa, productos, onBack, onEdit }) => {
         nombreContacto: datosEmpresa.nombreContacto,
         numeroContacto: datosEmpresa.numeroContacto,
         pais: datosEmpresa.pais,
+        zona: datosEmpresa.zona, // ← INCLUIR ZONA EN EL PEDIDO
         productos: productos,
         tipo: 'pedido'
       };
 
-      // ✅ CAMBIAR ESTA LÍNEA
+      // Guardar pedido en el backend
       const response = await axios.post(`${API_URL}/api/pedido`, pedido);
       
-      // ✅ CAMBIAR ESTA LÍNEA TAMBIÉN
-      const whatsappResponse = await axios.post(
-        `${API_URL}/api/pedido/${response.data._id}/whatsapp`
-      );
+      // ✅ OBTENER EL NÚMERO DE WHATSAPP SEGÚN LA ZONA SELECCIONADA
+      const numeroWhatsApp = ZONAS_WHATSAPP[datosEmpresa.zona] || ZONAS_WHATSAPP['Lima'];
+      
+      // ✅ GENERAR MENSAJE DE WHATSAPP
+      const mensaje = generarMensajeWhatsApp(response.data);
+      
+      // ✅ CREAR URL DE WHATSAPP CON EL NÚMERO CORRESPONDIENTE
+      const whatsappURL = `https://api.whatsapp.com/send?phone=${numeroWhatsApp}&text=${encodeURIComponent(mensaje)}`;
 
       toast.success('Pedido enviado exitosamente');
       
-      // Abrir WhatsApp
-      window.open(whatsappResponse.data.url, '_blank');
+      // Abrir WhatsApp con el número correcto
+      window.open(whatsappURL, '_blank');
       
       // Recargar página después de 2 segundos
       setTimeout(() => {
@@ -48,6 +54,32 @@ const ResumenPedido = ({ datosEmpresa, productos, onBack, onEdit }) => {
     } finally {
       setEnviando(false);
     }
+  };
+
+  // ✅ FUNCIÓN PARA GENERAR EL MENSAJE DE WHATSAPP
+  const generarMensajeWhatsApp = (pedido) => {
+    let mensaje = `🚀 *NUEVO PEDIDO - ${pedido.numeroDocumento}*\n\n`;
+    mensaje += `👤 *Empresa:* ${pedido.empresa.nombre}\n`;
+    mensaje += `📱 *Contacto:* ${pedido.nombreContacto}\n`;
+    mensaje += `📞 *Teléfono:* ${pedido.numeroContacto}\n`;
+    mensaje += `🌍 *País:* ${pedido.pais}\n`;
+    mensaje += `📍 *Zona:* ${pedido.zona}\n\n`;
+    mensaje += `📦 *PRODUCTOS:*\n`;
+    mensaje += `━━━━━━━━━━━━━━━━━━━━\n`;
+    
+    pedido.productos.forEach((prod, index) => {
+      mensaje += `${index + 1}. *${prod.codigo}*\n`;
+      mensaje += `   ${prod.descripcion}\n`;
+      mensaje += `   📦 ${prod.cantidadPaquetes} paquetes`;
+      mensaje += ` (${prod.piezasPorCajon * prod.cantidadPaquetes} piezas)\n\n`;
+    });
+    
+    const totalPaquetes = pedido.productos.reduce((sum, p) => sum + p.cantidadPaquetes, 0);
+    mensaje += `━━━━━━━━━━━━━━━━━━━━\n`;
+    mensaje += `📊 *Total:* ${totalPaquetes} paquetes\n\n`;
+    mensaje += `🕐 *Fecha:* ${new Date(pedido.fecha).toLocaleString('es-ES')}`;
+    
+    return mensaje;
   };
 
   return (
@@ -75,6 +107,11 @@ const ResumenPedido = ({ datosEmpresa, productos, onBack, onEdit }) => {
           <div>
             <span className="font-medium text-gray-700">Teléfono:</span>
             <p className="text-gray-600">{datosEmpresa.numeroContacto}</p>
+          </div>
+          {/* ✅ MOSTRAR ZONA */}
+          <div>
+            <span className="font-medium text-gray-700">Zona:</span>
+            <p className="text-gray-600 font-semibold text-blue-600">{datosEmpresa.zona}</p>
           </div>
         </div>
       </div>

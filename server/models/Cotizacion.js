@@ -23,6 +23,11 @@ const cotizacionSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  zona: { // ← AGREGAR ESTE CAMPO
+    type: String,
+    required: true,
+    enum: ['Lima', 'Centro', 'Norte', 'Sur']
+  },
   productos: [{
     codigo: { type: String, required: true },
     descripcion: { type: String, required: true },

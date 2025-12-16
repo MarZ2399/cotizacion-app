@@ -24,6 +24,12 @@ const pedidoSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  zona: { // ← NUEVO CAMPO
+    type: String,
+    required: true,
+    enum: ['Lima', 'Centro', 'Norte', 'Sur'],
+    default: 'Lima'
+  },
   productos: [{
     codigo: { type: String, required: true },
     descripcion: { type: String, required: true },

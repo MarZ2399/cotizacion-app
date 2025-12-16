@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
+import { ZONAS } from '../../config/zonas';
 
 const FormularioEmpresa = ({ onNext, datosIniciales }) => {
   const [formData, setFormData] = useState({
     nombreEmpresa: '',
     nombreContacto: '',
     numeroContacto: '',
-    pais: ''
+    pais: '',
+    zona: '' // ← CAMPO DE ZONA
   });
 
   useEffect(() => {
@@ -17,7 +19,8 @@ const FormularioEmpresa = ({ onNext, datosIniciales }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    if (!formData.nombreEmpresa || !formData.nombreContacto || !formData.numeroContacto || !formData.pais) {
+    // ✅ VALIDAR ZONA TAMBIÉN
+    if (!formData.nombreEmpresa || !formData.nombreContacto || !formData.numeroContacto || !formData.pais || !formData.zona) {
       alert('Por favor complete todos los campos');
       return;
     }
@@ -32,7 +35,7 @@ const FormularioEmpresa = ({ onNext, datosIniciales }) => {
       </h2>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Campo de empresa - AHORA ES INPUT */}
+        {/* Campo de empresa */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Nombre de la Empresa *
@@ -77,29 +80,52 @@ const FormularioEmpresa = ({ onNext, datosIniciales }) => {
           </div>
         </div>
 
-        {/* Campo de país - SIGUE SIENDO SELECT */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            País *
-          </label>
-          <select
-            value={formData.pais}
-            onChange={(e) => setFormData({...formData, pais: e.target.value})}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            required
-          >
-            <option value="">-- Seleccione un país --</option>
-            <option value="Bolivia">Bolivia</option>
-            <option value="Perú">Perú</option>
-            <option value="Chile">Chile</option>
-            <option value="Argentina">Argentina</option>
-            <option value="Brasil">Brasil</option>
-            <option value="Paraguay">Paraguay</option>
-            <option value="Uruguay">Uruguay</option>
-            <option value="Colombia">Colombia</option>
-            <option value="Ecuador">Ecuador</option>
-            <option value="Venezuela">Venezuela</option>
-          </select>
+        {/* ✅ GRID CON PAÍS Y ZONA */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Campo de país */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              País *
+            </label>
+            <select
+              value={formData.pais}
+              onChange={(e) => setFormData({...formData, pais: e.target.value})}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              required
+            >
+              <option value="">-- Seleccione un país --</option>
+              <option value="Bolivia">Bolivia</option>
+              <option value="Perú">Perú</option>
+              <option value="Chile">Chile</option>
+              <option value="Argentina">Argentina</option>
+              <option value="Brasil">Brasil</option>
+              <option value="Paraguay">Paraguay</option>
+              <option value="Uruguay">Uruguay</option>
+              <option value="Colombia">Colombia</option>
+              <option value="Ecuador">Ecuador</option>
+              <option value="Venezuela">Venezuela</option>
+            </select>
+          </div>
+
+          {/* ✅ NUEVO: Campo de zona */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Zona *
+            </label>
+            <select
+              value={formData.zona}
+              onChange={(e) => setFormData({...formData, zona: e.target.value})}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              required
+            >
+              <option value="">-- Seleccione una zona --</option>
+              {ZONAS.map((zona) => (
+                <option key={zona} value={zona}>
+                  {zona}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
         <button
