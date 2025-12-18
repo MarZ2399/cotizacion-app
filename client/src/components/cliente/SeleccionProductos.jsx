@@ -40,18 +40,35 @@ const SeleccionProductos = ({ onNext, onBack, productosIniciales }) => {
   };
 
   const actualizarCantidad = (codigo, cantidad) => {
-    const cantidadNum = parseInt(cantidad) || 0;
-    if (cantidadNum <= 0) {
-      eliminarProducto(codigo);
-      return;
-    }
-    
+  // Si el input está vacío, mantenemos el producto seleccionado
+  // y guardamos el valor vacío para permitir escribir otro número.
+  if (cantidad === '') {
     setProductosSeleccionados(
       productosSeleccionados.map(p =>
-        p.codigo === codigo ? { ...p, cantidadPaquetes: cantidadNum } : p
+        p.codigo === codigo ? { ...p, cantidadPaquetes: '' } : p
       )
     );
-  };
+    return;
+  }
+
+  const cantidadNum = parseInt(cantidad, 10);
+
+  // Si no es un número válido, no hacemos nada.
+  if (isNaN(cantidadNum)) return;
+
+  // Solo eliminamos si el usuario pone explícitamente 0.
+  if (cantidadNum === 0) {
+    eliminarProducto(codigo);
+    return;
+  }
+
+  setProductosSeleccionados(
+    productosSeleccionados.map(p =>
+      p.codigo === codigo ? { ...p, cantidadPaquetes: cantidadNum } : p
+    )
+  );
+};
+
 
   const eliminarProducto = (codigo) => {
     setProductosSeleccionados(productosSeleccionados.filter(p => p.codigo !== codigo));
@@ -169,13 +186,14 @@ const SeleccionProductos = ({ onNext, onBack, productosIniciales }) => {
                     <td className="px-4 py-3 text-right">
                       {estaSeleccionado ? (
                         <input
-                          type="number"
-                          min="0"
-                          value={estaSeleccionado.cantidadPaquetes}
-                          onChange={(e) => actualizarCantidad(producto.codigo, e.target.value)}
-                          className="w-20 px-2 py-1 border border-gray-300 rounded text-center text-sm"
-                          onClick={(e) => e.stopPropagation()}
-                        />
+  type="number"
+  min="0"
+  value={estaSeleccionado.cantidadPaquetes ?? ''}
+  onChange={(e) => actualizarCantidad(producto.codigo, e.target.value)}
+  className="w-20 px-2 py-1 border border-gray-300 rounded text-center text-sm"
+  onClick={(e) => e.stopPropagation()}
+/>
+
                       ) : (
                         <span className="text-gray-400 text-sm">0</span>
                       )}
@@ -214,12 +232,13 @@ const SeleccionProductos = ({ onNext, onBack, productosIniciales }) => {
                 
                 <div className="flex items-center gap-3">
                   <input
-                    type="number"
-                    min="1"
-                    value={producto.cantidadPaquetes}
-                    onChange={(e) => actualizarCantidad(producto.codigo, e.target.value)}
-                    className="w-20 px-2 py-1 border border-gray-300 rounded text-center text-sm"
-                  />
+  type="number"
+  min="0"
+  value={producto.cantidadPaquetes ?? ''}
+  onChange={(e) => actualizarCantidad(producto.codigo, e.target.value)}
+  className="w-20 px-2 py-1 border border-gray-300 rounded text-center text-sm"
+/>
+
                   <span className="text-xs text-gray-600">paquetes</span>
                   <button
                     onClick={() => eliminarProducto(producto.codigo)}
@@ -236,7 +255,11 @@ const SeleccionProductos = ({ onNext, onBack, productosIniciales }) => {
             <div className="flex justify-between items-center">
               <span className="font-semibold text-gray-700">Total de Paquetes:</span>
               <span className="font-bold text-xl text-blue-600">
-                {productosSeleccionados.reduce((sum, p) => sum + p.cantidadPaquetes, 0)}
+                {productosSeleccionados.reduce(
+  (sum, p) => sum + (parseInt(p.cantidadPaquetes, 10) || 0),
+  0
+)}
+
               </span>
             </div>
           </div>

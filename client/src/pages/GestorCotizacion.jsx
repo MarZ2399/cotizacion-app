@@ -4,9 +4,11 @@ import { useAuth } from '../context/AuthContext';
 import ListaPedidos from '../components/gestor/ListaPedidos';
 import FormularioCotizacion from '../components/gestor/FormularioCotizacion';
 import TablaCotizaciones from '../components/gestor/TablaCotizaciones';
+import { useNavigate } from 'react-router-dom';
 
 const GestorCotizacion = () => {
   const { usuario, logout } = useAuth();
+  const navigate = useNavigate(); 
   const [vista, setVista] = useState('pedidos'); // pedidos, cotizaciones
   const [pedidoSeleccionado, setPedidoSeleccionado] = useState(null);
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
@@ -27,6 +29,11 @@ const GestorCotizacion = () => {
     setVista('pedidos');
   };
 
+  const handleLogout = () => {
+    logout();
+    navigate('/', { replace: true }); // aquí la ruta de la pestaña de clientes
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Toaster position="top-right" />
@@ -45,7 +52,7 @@ const GestorCotizacion = () => {
             </div>
             
             <button
-              onClick={logout}
+              onClick={handleLogout}
               className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition font-medium"
             >
               🚪 Cerrar Sesión
